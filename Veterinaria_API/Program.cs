@@ -1,11 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using VeterinariaApi.Data;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configurar EF Core con SQLite
+// Configurar EF Core con MariaDB (XAMPP)
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=veterinaria.db"));
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        new MariaDbServerVersion(new Version(10, 4, 27)) // tu versión de MariaDB
+    ));
 
 builder.Services.AddCors(options =>
 {
@@ -16,8 +20,6 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
-
-
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
