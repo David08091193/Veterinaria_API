@@ -51,6 +51,34 @@ namespace VeterinariaApi.Controllers
                 .ToListAsync();
         }
 
+        [HttpGet("fecha/{fecha}")]
+        public async Task<ActionResult<IEnumerable<Cita>>> GetPorFecha(DateTime fecha)
+        {
+            return await _context.Citas
+                .Where(c => c.Fecha.Date == fecha.Date)
+                .ToListAsync();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, Cita cita)
+        {
+            if (id != cita.Id)
+                return BadRequest();
+
+            var citaExistente = await _context.Citas.FindAsync(id);
+            if (citaExistente == null)
+                return NotFound();
+
+            citaExistente.Fecha = cita.Fecha;
+            citaExistente.Hora = cita.Hora;
+            citaExistente.Motivo = cita.Motivo;
+
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
+
+
 
     }
 }
